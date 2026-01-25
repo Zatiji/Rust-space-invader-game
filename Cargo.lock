@@ -3,15 +3,6 @@
 version = 4
 
 [[package]]
-name = "Rust_space_invader_game"
-version = "0.1.0"
-dependencies = [
- "crossterm",
- "rusty_audio",
- "rusty_time",
-]
-
-[[package]]
 name = "aho-corasick"
 version = "1.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -778,6 +769,15 @@ dependencies = [
  "hound",
  "lewton",
  "symphonia",
+]
+
+[[package]]
+name = "rust_space_invader_game"
+version = "0.1.0"
+dependencies = [
+ "crossterm",
+ "rusty_audio",
+ "rusty_time",
 ]
 
 [[package]]
