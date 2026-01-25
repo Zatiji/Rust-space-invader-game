@@ -8,7 +8,7 @@ use rusty_audio::Audio;
 fn main() -> Result<(), Box<dyn Error>> {
     let mut audio = Audio::new();
 
-    load_audio_from_folder(&mut audio, "src/sounds");
+    load_audio_from_folder(&mut audio, "src/audio");
 
     audio.play("startup");
     
