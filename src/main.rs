@@ -8,6 +8,7 @@ use crossterm::{ExecutableCommand, event};
 use crossterm::cursor::{Hide, Show};
 use crossterm::terminal::{self, EnterAlternateScreen, LeaveAlternateScreen};
 use rust_space_invader_game::frame::Drawable;
+use rust_space_invader_game::invaders::Invaders;
 use rust_space_invader_game::player::Player;
 use rust_space_invader_game::{frame, render};
 use rusty_audio::Audio;
@@ -50,6 +51,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // game loop
     let mut player = Player::new();
     let mut instant =Instant::now();
+    let mut invaders = Invaders::new();
     'gameloop: loop {
         // per_frame initialisation
         let delta = instant.elapsed();
@@ -77,9 +79,15 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         // Updates
         player.update(delta);
+        if invaders.update(delta) {
+            audio.play("move");
+        }
 
         // Draw & render
-        player.draw(&mut current_frame);
+        let drawables: Vec<&dyn Drawable> = vec![&player, &invaders];
+        for drawable in drawables {
+            drawable.draw(&mut current_frame);
+        }
         let _ = render_transiver.send(current_frame);
         thread::sleep(Duration::from_millis(1));
     }
