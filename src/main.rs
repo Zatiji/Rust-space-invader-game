@@ -1,6 +1,6 @@
 use std::error::Error;
 use std::sync::mpsc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use std::{fs, io, thread};
 
 use crossterm::event::{Event, KeyCode};
@@ -49,8 +49,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // game loop
     let mut player = Player::new();
+    let mut instant =Instant::now();
     'gameloop: loop {
         // per_frame initialisation
+        let delta = instant.elapsed();
+        instant = Instant::now();
         let mut current_frame = new_frame();
 
         while event::poll(Duration::default())? {
@@ -58,6 +61,11 @@ fn main() -> Result<(), Box<dyn Error>> {
                 match key_event.code {
                     KeyCode::Left | KeyCode::Char('a') => player.move_left(),
                     KeyCode::Right | KeyCode::Char('d') => player.move_right(),
+                    KeyCode::Char(' ') | KeyCode::Char('w') | KeyCode::Enter | KeyCode::Up => {
+                        if player.shoot() {
+                            audio.play("pew");
+                        }
+                    },
                     KeyCode::Esc | KeyCode::Char('q') => {
                         audio.play("lose");
                         break 'gameloop;
@@ -66,6 +74,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                 }
             }
         }
+
+        // Updates
+        player.update(delta);
 
         // Draw & render
         player.draw(&mut current_frame);
