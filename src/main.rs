@@ -98,6 +98,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         // WIN or LOSE
         if invaders.all_killed() {
             audio.play("win");
+
             let mut final_frame = new_frame();
             let msg = ["Y", "O", "U", " ", "W", "I", "N"];
             let start_x = (NUM_COLUMNS - msg.len()) / 2;
@@ -106,11 +107,13 @@ fn main() -> Result<(), Box<dyn Error>> {
                 final_frame[start_x + i][y] = s;
             }
             let _ = render_transiver.send(final_frame);
+            
             thread::sleep(Duration::from_secs(3));
             break 'gameloop;
         }
         if invaders.reached_bottom() {
             audio.play("lose");
+
             let mut final_frame = new_frame();
             let msg = ["Y", "O", "U", " ", "L", "O", "S", "E"];
             let start_x = (NUM_COLUMNS - msg.len()) / 2;
@@ -119,6 +122,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 final_frame[start_x + i][y] = s;
             }
             let _ = render_transiver.send(final_frame);
+            
             thread::sleep(Duration::from_secs(3));
             break 'gameloop;
         }
