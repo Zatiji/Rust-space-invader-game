@@ -10,7 +10,7 @@ use crossterm::terminal::{self, EnterAlternateScreen, LeaveAlternateScreen};
 use rust_space_invader_game::frame::Drawable;
 use rust_space_invader_game::invaders::Invaders;
 use rust_space_invader_game::player::Player;
-use rust_space_invader_game::{frame, render};
+use rust_space_invader_game::{frame, render, NUM_COLUMNS, NUM_ROWS};
 use rusty_audio::Audio;
 
 use crate::frame::new_frame;
@@ -98,10 +98,28 @@ fn main() -> Result<(), Box<dyn Error>> {
         // WIN or LOSE
         if invaders.all_killed() {
             audio.play("win");
+            let mut final_frame = new_frame();
+            let msg = ["Y", "O", "U", " ", "W", "I", "N"];
+            let start_x = (NUM_COLUMNS - msg.len()) / 2;
+            let y = NUM_ROWS / 2;
+            for (i, &s) in msg.iter().enumerate() {
+                final_frame[start_x + i][y] = s;
+            }
+            let _ = render_transiver.send(final_frame);
+            thread::sleep(Duration::from_secs(3));
             break 'gameloop;
         }
         if invaders.reached_bottom() {
             audio.play("lose");
+            let mut final_frame = new_frame();
+            let msg = ["Y", "O", "U", " ", "L", "O", "S", "E"];
+            let start_x = (NUM_COLUMNS - msg.len()) / 2;
+            let y = NUM_ROWS / 2;
+            for (i, &s) in msg.iter().enumerate() {
+                final_frame[start_x + i][y] = s;
+            }
+            let _ = render_transiver.send(final_frame);
+            thread::sleep(Duration::from_secs(3));
             break 'gameloop;
         }
     }
